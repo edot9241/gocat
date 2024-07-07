@@ -66,7 +66,6 @@ func PrepareConfig(args []string) Config {
 			config.showTabs = true
 		case "-T", "--show-tabs":
 			config.showTabs = true
-		// TODO: case "-u": ignored, but does it show something extra if you use it?
 		case "-v", "--show-nonprinting":
 			config.showNonPrinting = true
 		case "--help":
