@@ -9,7 +9,7 @@ import (
 func main() {
 	config := PrepareConfig(os.Args)
 
-	if config.err != "" {
+	if config.showError {
 		PrintError(config.err)
 		return
 	}

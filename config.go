@@ -4,7 +4,9 @@ import "fmt"
 
 // TODO: prevent redefinition of the fields?
 type Config struct {
-	err string
+	// Display error and exit
+	showError bool
+	err       string
 
 	showHelp    bool
 	showVersion bool
@@ -27,6 +29,7 @@ func PrepareConfig(args []string) Config {
 			return config
 		default:
 			if arg[0] == '-' {
+				config.showError = true
 				config.err = fmt.Sprint("Unknown switch:", arg)
 				return config
 			} else {
