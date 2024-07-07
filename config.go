@@ -35,13 +35,9 @@ func PrepareConfig(args []string) Config {
 	for i := 1; i < len(args); i++ {
 		arg := args[i]
 
+		// TODO: compound switches. E.g. vE
 		switch arg {
-		case "--help":
-			config.showHelp = true
-			return config
-		case "--version":
-			config.showVersion = true
-			return config
+		// Either a filepath or an unknown switch
 		default:
 			if arg[0] == '-' {
 				config.showError = true
@@ -50,6 +46,35 @@ func PrepareConfig(args []string) Config {
 			} else {
 				config.filepath = arg
 			}
+		case "-A", "--show-all":
+			config.showNonPrinting = true
+			config.showEnds = true
+			config.showTabs = true
+		case "-b", "--number-nonblank":
+			config.numberNonBlank = true
+		case "-e":
+			config.showNonPrinting = true
+			config.showEnds = true
+		case "-E", "--show-ends":
+			config.showEnds = true
+		case "-n", "--number":
+			config.number = true
+		case "-s", "--squeeze-blank":
+			config.squeezeBlank = true
+		case "-t":
+			config.showNonPrinting = true
+			config.showTabs = true
+		case "-T", "--show-tabs":
+			config.showTabs = true
+		// TODO: case "-u": ignored, but does it show something extra if you use it?
+		case "-v", "--show-nonprinting":
+			config.showNonPrinting = true
+		case "--help":
+			config.showHelp = true
+			return config
+		case "--version":
+			config.showVersion = true
+			return config
 		}
 	}
 
