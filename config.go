@@ -19,8 +19,11 @@ func PrepareConfig(args []string) Config {
 		arg := args[i]
 
 		switch arg {
-		case "--help", "-h":
+		case "--help":
 			config.showHelp = true
+			return config
+		case "--version":
+			config.showVersion = true
 			return config
 		default:
 			if arg[0] == '-' {
