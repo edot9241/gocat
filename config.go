@@ -8,8 +8,23 @@ type Config struct {
 	showError bool
 	err       string
 
-	showHelp    bool
+	// Display help and exit
+	showHelp bool
+	// Output version information and exit
 	showVersion bool
+
+	// Number nonempty output lines, overrides 'number'
+	numberNonBlank bool
+	// Display $ at end of each line
+	showEnds bool
+	// Number all output lines
+	number bool
+	// Suppress repeated empty output lines
+	squeezeBlank bool
+	// Display TAB characters as ^I
+	showTabs bool
+	// Use ^ and M- notation, except for LFD and TAB
+	showNonPrinting bool
 
 	filepath string
 }
