@@ -23,7 +23,7 @@ type Config struct {
 	squeezeBlank bool
 	// Display TAB characters as ^I
 	showTabs bool
-	// Use ^ and M- notation, except for LFD and TAB
+	// Use ^ and M- notation, except for LFD (newline?) and TAB
 	showNonPrinting bool
 
 	filepath string
