@@ -1,32 +1,32 @@
-package main
+package internal
 
 import "fmt"
 
 // TODO: prevent redefinition of the fields?
 type Config struct {
 	// Display error and exit
-	showError bool
-	err       string
+	ShowError bool
+	Err       string
 
 	// Display help and exit
-	showHelp bool
+	ShowHelp bool
 	// Output version information and exit
-	showVersion bool
+	ShowVersion bool
 
 	// Number nonempty output lines, overrides 'number'
-	numberNonBlank bool
+	NumberNonBlank bool
 	// Display $ at end of each line
-	showEnds bool
+	ShowEnds bool
 	// Number all output lines
-	number bool
+	Number bool
 	// Suppress repeated empty output lines
-	squeezeBlank bool
+	SqueezeBlank bool
 	// Display TAB characters as ^I
-	showTabs bool
+	ShowTabs bool
 	// Use ^ and M- notation, except for LFD (newline?) and TAB
-	showNonPrinting bool
+	ShowNonPrinting bool
 
-	filepath string
+	Filepath string
 }
 
 func PrepareConfig(args []string) Config {
@@ -40,45 +40,45 @@ func PrepareConfig(args []string) Config {
 		// Either a filepath or an unknown switch
 		default:
 			if arg[0] == '-' {
-				config.showError = true
-				config.err = fmt.Sprint("Unknown switch:", arg)
+				config.ShowError = true
+				config.Err = fmt.Sprint("Unknown switch:", arg)
 				return config
 			} else {
-				config.filepath = arg
+				config.Filepath = arg
 			}
 		case "-A", "--show-all":
-			config.showNonPrinting = true
-			config.showEnds = true
-			config.showTabs = true
+			config.ShowNonPrinting = true
+			config.ShowEnds = true
+			config.ShowTabs = true
 		case "-b", "--number-nonblank":
-			config.numberNonBlank = true
+			config.NumberNonBlank = true
 		case "-e":
-			config.showNonPrinting = true
-			config.showEnds = true
+			config.ShowNonPrinting = true
+			config.ShowEnds = true
 		case "-E", "--show-ends":
-			config.showEnds = true
+			config.ShowEnds = true
 		case "-n", "--number":
-			config.number = true
+			config.Number = true
 		case "-s", "--squeeze-blank":
-			config.squeezeBlank = true
+			config.SqueezeBlank = true
 		case "-t":
-			config.showNonPrinting = true
-			config.showTabs = true
+			config.ShowNonPrinting = true
+			config.ShowTabs = true
 		case "-T", "--show-tabs":
-			config.showTabs = true
+			config.ShowTabs = true
 		case "-v", "--show-nonprinting":
-			config.showNonPrinting = true
+			config.ShowNonPrinting = true
 		case "--help":
-			config.showHelp = true
+			config.ShowHelp = true
 			return config
 		case "--version":
-			config.showVersion = true
+			config.ShowVersion = true
 			return config
 		}
 	}
 
-	if config.filepath == "" {
-		config.err = fmt.Sprint("No filepath specified")
+	if config.Filepath == "" {
+		config.Err = fmt.Sprint("No filepath specified")
 		return config
 	}
 
