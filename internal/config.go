@@ -41,7 +41,7 @@ func PrepareConfig(args []string) Config {
 		default:
 			if arg[0] == '-' {
 				config.ShowError = true
-				config.Err = fmt.Sprint("Unknown switch:", arg)
+				config.Err = fmt.Sprint("Unknown switch: ", arg)
 				return config
 			} else {
 				config.Filepath = arg
@@ -78,7 +78,8 @@ func PrepareConfig(args []string) Config {
 	}
 
 	if config.Filepath == "" {
-		config.Err = fmt.Sprint("No filepath specified")
+		config.ShowError = true
+		config.Err = "No filepath specified"
 		return config
 	}
 
