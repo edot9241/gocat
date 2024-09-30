@@ -64,8 +64,8 @@ func ProcessLine(loopState *LoopState, config *Config) (text string, shouldBePri
 	return line, true
 }
 
-func ProcessFile(file *os.File, config *Config, output io.Writer) {
-	scanner := bufio.NewScanner(file)
+func ProcessInput(input *os.File, config *Config, output io.Writer) {
+	scanner := bufio.NewScanner(input)
 
 	loopState := LoopState{}
 

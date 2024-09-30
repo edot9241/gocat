@@ -1,6 +1,8 @@
 package internal
 
-import "fmt"
+import (
+	"strings"
+)
 
 // TODO: prevent redefinition of the fields?
 type Config struct {
@@ -26,26 +28,62 @@ type Config struct {
 	// Use ^ and M- notation, except for LFD (newline?) and TAB
 	ShowNonPrinting bool
 
-	Filepath string
+	Filepaths []string
 }
 
-func PrepareConfig(args []string) Config {
-	config := Config{}
+const (
+	FilepathStdin = "-"
+)
 
-	for i := 1; i < len(args); i++ {
+func isCompoundOption(option string) bool {
+	return option[0] == '-' && len(option) > 2 && option[1] != '-'
+}
+
+func decoupleCompound(compoundOption string) []string {
+	decoupledOptions := make([]string, 0)
+	for _, char := range compoundOption[1:] {
+		decoupledOptions = append(decoupledOptions, string("-")+string(char))
+	}
+	return decoupledOptions
+}
+
+func prepareArgs(args []string) []string {
+	newArgs := make([]string, 0)
+	for _, arg := range args[1:] {
+		if isCompoundOption(arg) {
+			newArgs = append(newArgs, decoupleCompound(arg)...)
+		} else {
+			newArgs = append(newArgs, arg)
+		}
+	}
+	return newArgs
+}
+
+func PrepareConfig(osArgs []string) Config {
+	config := Config{
+		Filepaths: make([]string, 0),
+	}
+
+	args := prepareArgs(osArgs)
+
+	for i := 0; i < len(args); i++ {
 		arg := args[i]
 
-		// TODO: compound switches. E.g. vE
 		switch arg {
-		// Either a filepath or an unknown switch
 		default:
-			if arg[0] == '-' {
+			if strings.HasPrefix(arg, "--") {
 				config.ShowError = true
-				config.Err = fmt.Sprint("Unknown switch: ", arg)
+				config.Err = "gocat: unrecognized option '" + arg + "'"
 				return config
-			} else {
-				config.Filepath = arg
 			}
+			if strings.HasPrefix(arg, "-") {
+				config.ShowError = true
+				config.Err = "gocat: invalid option -- '" + arg + "'"
+				return config
+			}
+			config.Filepaths = append(config.Filepaths, arg)
+		case "-", "--":
+			config.Filepaths = append(config.Filepaths, FilepathStdin)
 		case "-A", "--show-all":
 			config.ShowNonPrinting = true
 			config.ShowEnds = true
@@ -77,10 +115,9 @@ func PrepareConfig(args []string) Config {
 		}
 	}
 
-	if config.Filepath == "" {
-		config.ShowError = true
-		config.Err = "No filepath specified"
-		return config
+	// if no files passed, use stdin
+	if len(config.Filepaths) == 0 {
+		config.Filepaths = append(config.Filepaths, FilepathStdin)
 	}
 
 	return config

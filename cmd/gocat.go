@@ -27,12 +27,22 @@ func Run(args []string, output io.Writer) {
 		return
 	}
 
-	file, err := os.Open(config.Filepath)
-	if err != nil {
-		internal.PrintError(output, err.Error(), "\"", config.Filepath, "\"")
-		return
-	}
-	defer file.Close()
+	for _, filepath := range config.Filepaths {
+		var file *os.File
+		var err error
 
-	internal.ProcessFile(file, &config, output)
+		if filepath == internal.FilepathStdin {
+			file = os.Stdin
+		} else {
+			file, err = os.Open(filepath)
+		}
+
+		if err != nil {
+			internal.PrintError(output, err.Error(), "\"", filepath, "\"")
+			continue
+		}
+
+		internal.ProcessInput(file, &config, output)
+		file.Close()
+	}
 }
