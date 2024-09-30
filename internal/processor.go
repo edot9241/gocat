@@ -3,6 +3,7 @@ package internal
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -63,7 +64,7 @@ func ProcessLine(loopState *LoopState, config *Config) (text string, shouldBePri
 	return line, true
 }
 
-func ProcessFile(file *os.File, config *Config) {
+func ProcessFile(file *os.File, config *Config, output io.Writer) {
 	scanner := bufio.NewScanner(file)
 
 	loopState := LoopState{}
@@ -85,7 +86,7 @@ func ProcessFile(file *os.File, config *Config) {
 		text, shouldBePrinted := ProcessLine(&loopState, config)
 
 		if shouldBePrinted {
-			fmt.Println(text)
+			fmt.Fprintln(output, text)
 		}
 	}
 }

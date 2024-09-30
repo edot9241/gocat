@@ -1,6 +1,9 @@
 package internal
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+)
 
 const (
 	COLOR_RESET = "\033[0m"
@@ -74,14 +77,14 @@ COPYRIGHT
 	it.  There is NO WARRANTY, to the extent permitted by law.
 `
 
-func PrintVersion() {
-	fmt.Print(version)
+func PrintVersion(output io.Writer) {
+	fmt.Fprint(output, version)
 }
 
-func PrintHelp() {
-	fmt.Print(helpString)
+func PrintHelp(output io.Writer) {
+	fmt.Fprint(output, helpString)
 }
 
-func PrintError(strings ...string) {
-	fmt.Println(COLOR_ERROR+"ERROR: ", strings, COLOR_RESET)
+func PrintError(output io.Writer, strings ...string) {
+	fmt.Fprintln(output, COLOR_ERROR+"ERROR: ", strings, COLOR_RESET)
 }

@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	gocat.Run(os.Args)
+	gocat.Run(os.Args, os.Stdout)
 }
