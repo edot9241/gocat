@@ -1,6 +1,7 @@
 package gocat
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -13,7 +14,7 @@ func Run(args []string, output io.Writer) {
 	config := internal.PrepareConfig(args)
 
 	if config.ShowError {
-		internal.PrintError(output, config.Err)
+		fmt.Fprintf(output, config.Err)
 		return
 	}
 
@@ -38,7 +39,7 @@ func Run(args []string, output io.Writer) {
 		}
 
 		if err != nil {
-			internal.PrintError(output, err.Error(), "\"", filepath, "\"")
+			fmt.Fprintf(output, err.Error(), "\"", filepath, "\"")
 			continue
 		}
 

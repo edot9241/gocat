@@ -5,11 +5,6 @@ import (
 	"io"
 )
 
-const (
-	COLOR_RESET = "\033[0m"
-	COLOR_ERROR = "\033[31m"
-)
-
 const version = "1"
 
 const helpString = `NAME
@@ -83,8 +78,4 @@ func PrintVersion(output io.Writer) {
 
 func PrintHelp(output io.Writer) {
 	fmt.Fprint(output, helpString)
-}
-
-func PrintError(output io.Writer, strings ...string) {
-	fmt.Fprintln(output, COLOR_ERROR+"ERROR: ", strings, COLOR_RESET)
 }
