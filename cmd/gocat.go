@@ -1,6 +1,7 @@
 package gocat
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -39,8 +40,13 @@ func Run(args []string, output io.Writer) {
 		}
 
 		if err != nil {
-			fmt.Fprintf(output, err.Error(), "\"", filepath, "\"")
-			continue
+			if errors.Is(err, os.ErrNotExist) {
+				fmt.Fprint(output, "gocat: ", filepath, ": No such file or directory")
+				continue
+			} else {
+				fmt.Fprintf(output, err.Error(), "\"", filepath, "\"")
+				return
+			}
 		}
 
 		internal.ProcessInput(file, &config, output)
