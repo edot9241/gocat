@@ -79,22 +79,22 @@ func TestFiles(t *testing.T) {
 }
 
 func TestFailUnrecognized(t *testing.T) {
-	args := []string{"--nonexistent-option"}
-	expectedOutput := "gocat: unrecognized option '" + args[0] + "'"
+	args := []string{"gocat.exe", "--nonexistent-option"}
+	expectedOutput := "gocat: unrecognized option '" + args[1] + "'"
 
 	testOutput(t, args, expectedOutput)
 }
 
 func TestFailInvalidOption(t *testing.T) {
-	args := []string{"-p"}
-	expectedOutput := "gocat: invalid option -- '" + args[0] + "'"
+	args := []string{"gocat.exe", "-p"}
+	expectedOutput := "gocat: invalid option -- '" + args[1] + "'"
 
 	testOutput(t, args, expectedOutput)
 }
 
 func TestFailFileNotFound(t *testing.T) {
-	args := []string{"non-existent-file.txt"}
-	expectedOutput := "TODO"
+	args := []string{"gocat.exe", "non-existent-file.txt"}
+	expectedOutput := "gocat: " + args[1] + ": No such file or directory"
 
 	testOutput(t, args, expectedOutput)
 }
