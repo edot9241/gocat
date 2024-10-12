@@ -104,6 +104,8 @@ func PrepareConfig(osArgs []string) Config {
 			config.ShowTabs = true
 		case "-T", "--show-tabs":
 			config.ShowTabs = true
+		case "-u":
+			// ignore
 		case "-v", "--show-nonprinting":
 			config.ShowNonPrinting = true
 		case "--help":
