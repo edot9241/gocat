@@ -1,5 +1,6 @@
 package gocat
 
+// TODO: use a docker container with cat and diff instead?
 // TODO: move into gocat_test
 
 import (
@@ -9,38 +10,11 @@ import (
 	"testing"
 )
 
+// Note: cat writes "\n" after its output, so for clarity keeping '+ "\n"'
+// and also prepending it for every test string. TODO: check if this comment is correct.
 const (
-	testString1 string = `
-	hello,
-	world 1!
-
-       
-
-
-	hey 1
-
-	!@)(*$&)*!#%^%!_)+_
-
-
-
-
-	` + "\n"
-
-	testString2 string = `
-	hello,
-	world 2!
-
-       
-
-
-	hey 2
-
-	!@)(*$&)*!#%^%!_)+_
-
-
-
-
-	` + "\n"
+	testString1 string = "test string 1" + "\n"
+	testString2 string = "test string 2" + "\n"
 )
 
 func TestStdin(t *testing.T) {
@@ -101,6 +75,152 @@ func TestFailFileNotFound(t *testing.T) {
 	testOutput(t, args, expectedOutput)
 }
 
+func TestParameters(t *testing.T) {
+	var expectedOutput string
+	testContent := `
+	hello,
+	world 1!
+
+       
+
+
+	hey 1
+
+	!@)(*$&)*!#%^%!_)+_
+
+
+
+
+	` + "\n"
+
+	/*args = []string{"gocat.exe", "-A"}
+	args = []string{"gocat.exe", "--show-all"}
+	args = []string{"gocat.exe", "-vET"}*/
+
+	// -b, --number-nonblank, (-b, -n), (-n, -b) | number nonempty output lines, overrides -n
+	expectedOutput = `
+     1		hello,
+     2		world 1!
+
+     3	       
+
+
+     4		hey 1
+
+     5		!@)(*$&)*!#%^%!_)+_
+
+
+
+
+     6		` + "\n"
+
+	testParameters(t, []string{"-b"}, testContent, expectedOutput)
+	testParameters(t, []string{"--number-nonblank"}, testContent, expectedOutput)
+	testParameters(t, []string{"-b", "-n"}, testContent, expectedOutput)
+	testParameters(t, []string{"-n", "-b"}, testContent, expectedOutput)
+
+	/*args = []string{"gocat.exe", "-e"}
+	args = []string{"gocat.exe", "-vE"}
+	args = []string{"gocat.exe", "-Ev"}*/
+
+	// -E, --show-ends | display $ at end of each line
+	expectedOutput = `$
+	hello,$
+	world 1!$
+$
+       $
+$
+$
+	hey 1$
+$
+	!@)(*$&)*!#%^%!_)+_$
+$
+$
+$
+$
+	$` + "\n"
+	testParameters(t, []string{"-E"}, testContent, expectedOutput)
+	testParameters(t, []string{"--show-ends"}, testContent, expectedOutput)
+
+	// -n, --number | number all output lines
+	expectedOutput = `     1	
+     2		hello,
+     3		world 1!
+     4	
+     5	       
+     6	
+     7	
+     8		hey 1
+     9	
+    10		!@)(*$&)*!#%^%!_)+_
+    11	
+    12	
+    13	
+    14	
+    15		` + "\n"
+
+	testParameters(t, []string{"-n"}, testContent, expectedOutput)
+	testParameters(t, []string{"--number"}, testContent, expectedOutput)
+
+	// -s, --squeeze-blank | suppress repeated empty output lines
+	expectedOutput = `
+	hello,
+	world 1!
+
+       
+
+	hey 1
+
+	!@)(*$&)*!#%^%!_)+_
+
+	` + "\n"
+
+	testParameters(t, []string{"-s"}, testContent, expectedOutput)
+	testParameters(t, []string{"--squeeze-blank"}, testContent, expectedOutput)
+
+	/*args = []string{"gocat.exe", "-t"}
+	args = []string{"gocat.exe", "-vT"}
+	args = []string{"gocat.exe", "-Tv"}*/
+
+	// -T, --show-tabs | display TAB characters as ^I
+	expectedOutput = `
+^Ihello,
+^Iworld 1!
+
+       
+
+
+^Ihey 1
+
+^I!@)(*$&)*!#%^%!_)+_
+
+
+
+
+^I` + "\n"
+	testParameters(t, []string{"-T"}, testContent, expectedOutput)
+	testParameters(t, []string{"--show-tabs"}, testContent, expectedOutput)
+
+	// -u | ignored
+	expectedOutput = testContent
+	testParameters(t, []string{"-u"}, testContent, expectedOutput)
+
+	/*args = []string{"gocat.exe", "-v"}
+	args = []string{"gocat.exe", "--show-nonprinting"}*/
+
+	// TODO: reuse strings in gocat.go with go:linkname
+	//expectedOutput =
+	//testParameter(t, "--help", testContent, expectedOutput)
+	//expectedOutput =
+	//testParameter(t, "--version", testContent, expectedOutput)
+}
+
+func testParameters(t *testing.T, params []string, testString string, expectedOutput string) {
+	fakeStdinWrite(t, testString)
+	args := append([]string{"gocat.exe"}, params...)
+	testOutput(t, args, expectedOutput)
+}
+
 func testOutput(t *testing.T, args []string, expectedOutput string) {
 	var buffer bytes.Buffer
 	Run(args, &buffer)
@@ -108,9 +228,9 @@ func testOutput(t *testing.T, args []string, expectedOutput string) {
 	output := buffer.String()
 	if output != expectedOutput {
 		t.Fatal(
-			"Args: ", args, "\n",
-			"Expected: ", expectedOutput, "\n",
-			"Received: ", output, "\n",
+			"\nArgs: ", args,
+			"\nExpected:\n", expectedOutput,
+			"\nReceived:\n", output,
 		)
 	}
 }
