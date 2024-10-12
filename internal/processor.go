@@ -28,14 +28,14 @@ func ProcessLine(loopState *LoopState, config *Config) (text string, shouldBePri
 	line := loopState.line
 
 	if config.SqueezeBlank {
-		if loopState.empty && loopState.emptyLines > 2 {
+		if loopState.empty && loopState.emptyLines > 1 {
 			return "", false
 		}
 	}
 
 	if config.NumberNonBlank {
 		if !loopState.empty {
-			line = fmt.Sprintf("%6s", strconv.Itoa(loopState.lineNumber)) + "\t" + line
+			line = fmt.Sprintf("%6s", strconv.Itoa(loopState.lineNumberNonEmpty)) + "\t" + line
 		}
 	} else if config.Number {
 		line = fmt.Sprintf("%6s", strconv.Itoa(loopState.lineNumber)) + "\t" + line
