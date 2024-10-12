@@ -35,10 +35,10 @@ func ProcessLine(loopState *LoopState, config *Config) (text string, shouldBePri
 
 	if config.NumberNonBlank {
 		if !loopState.empty {
-			line = strconv.Itoa(loopState.lineNumberNonEmpty) + " " + line
+			line = fmt.Sprintf("%6s", strconv.Itoa(loopState.lineNumber)) + "\t" + line
 		}
 	} else if config.Number {
-		line = strconv.Itoa(loopState.lineNumber) + " " + line
+		line = fmt.Sprintf("%6s", strconv.Itoa(loopState.lineNumber)) + "\t" + line
 	}
 
 	if config.ShowEnds {
