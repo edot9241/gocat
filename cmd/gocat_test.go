@@ -1,5 +1,7 @@
 package gocat
 
+// TODO: move into gocat_test
+
 import (
 	"bytes"
 	"os"
