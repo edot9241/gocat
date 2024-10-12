@@ -1,6 +1,7 @@
 package gocat
 
 // TODO: use a docker container with cat and diff instead?
+// TODO: maybe move parameter test's expected output into their own files at least?
 // TODO: move into gocat_test
 
 import (
